@@ -1335,31 +1335,70 @@ if (location.hash) {
 }
 
 /* ========================================================
-   2. 全螢幕（跨瀏覽器）
+   2. 全螢幕（跨瀏覽器，含 Promise rejection 處理）
+   --------------------------------------------------------
+   常見失敗原因（會以 toast 提示）：
+   - 在 iframe 中開啟（如編輯器預覽面板）且未授予 allowfullscreen
+   - 瀏覽器設定禁用全螢幕
+   - 非 user gesture 觸發（不會發生於本檔案，因為都由 click/keydown 觸發）
 ======================================================== */
-function requestFs(el) {
-  return (el.requestFullscreen || el.webkitRequestFullscreen ||
-          el.mozRequestFullScreen || el.msRequestFullscreen).call(el);
+function getFsRequestFn(el) {
+  return el.requestFullscreen || el.webkitRequestFullscreen ||
+         el.mozRequestFullScreen || el.msRequestFullscreen || null;
 }
-function exitFs() {
-  return (document.exitFullscreen || document.webkitExitFullscreen ||
-          document.mozCancelFullScreen || document.msExitFullscreen).call(document);
+function getFsExitFn() {
+  return document.exitFullscreen || document.webkitExitFullscreen ||
+         document.mozCancelFullScreen || document.msExitFullscreen || null;
 }
 function isFs() {
   return document.fullscreenElement || document.webkitFullscreenElement ||
          document.mozFullScreenElement || document.msFullscreenElement;
 }
-function toggleFullscreen() {
-  try {
-    if (isFs()) exitFs();
-    else requestFs(document.documentElement);
-  } catch (e) {
-    showToast('無法切換全螢幕，請按 F11 或 ⌃⌘F');
+function enterFs(el) {
+  const req = getFsRequestFn(el);
+  if (!req) {
+    showToast('此瀏覽器不支援全螢幕 API，請按 F11', 4000);
+    return Promise.reject(new Error('no fullscreen api'));
   }
+  let p;
+  try { p = req.call(el); } catch (e) { return Promise.reject(e); }
+  // 部分舊瀏覽器不回傳 Promise
+  if (!p || typeof p.then !== 'function') return Promise.resolve();
+  return p;
+}
+function toggleFullscreen() {
+  if (isFs()) {
+    const exit = getFsExitFn();
+    if (exit) exit.call(document);
+    return;
+  }
+  enterFs(document.documentElement).catch(err => {
+    // 典型錯誤：iframe 沒有 allowfullscreen
+    const inIframe = window.self !== window.top;
+    if (inIframe) {
+      showToast('預覽面板內無法全螢幕，請在新分頁開啟', 5000);
+    } else {
+      showToast('無法進入全螢幕，請按 F11 或 ⌃⌘F', 4000);
+    }
+    console.warn('Fullscreen request failed:', err);
+  });
 }
 function startPresentation() {
-  try { requestFs(document.documentElement); } catch(e) {}
-  nextSlide();
+  // 必須在 user gesture 內同步呼叫 requestFullscreen
+  enterFs(document.documentElement)
+    .catch(err => {
+      const inIframe = window.self !== window.top;
+      if (inIframe) {
+        showToast('預覽面板內無法全螢幕。請在新分頁開啟此網址，或按 F11 後再開始。', 6000);
+      } else {
+        showToast('無法進入全螢幕，請改按 F11 或 ⌃⌘F', 5000);
+      }
+      console.warn('Fullscreen request failed:', err);
+    })
+    .finally(() => {
+      // 無論全螢幕成功與否，都推進到下一頁
+      nextSlide();
+    });
 }
 
 function showToast(msg, ms=2500) {
