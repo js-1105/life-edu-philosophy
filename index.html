@@ -145,6 +145,8 @@ blockquote {
   letter-spacing: 0.1em;
 }
 .cover-cta {
+  position: relative;   /* 啟用 z-index */
+  z-index: 60;          /* 高於 click-zones（z=50），避免點擊被攔截 */
   margin-top: 2.5em;
   background: var(--color-accent);
   color: var(--color-primary-dark);
@@ -1310,6 +1312,9 @@ function showSlide(n) {
 
   // 進入文字雲頁時觸發重繪
   if (n === 4) setTimeout(renderCloud, 250);
+
+  // 封面頁停用左右點擊區，避免攔截 CTA 按鈕的點擊
+  document.body.classList.toggle('no-clickzones', n === 1);
 }
 
 function nextSlide() { showSlide(current + 1); }
@@ -1329,9 +1334,12 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'r' || e.key === 'R') resetWords();
 });
 
+// 初始化：依 hash 跳頁，否則停留封面（並確保封面停用 click-zones）
 if (location.hash) {
   const n = parseInt(location.hash.slice(1));
   if (!isNaN(n)) showSlide(n);
+} else {
+  document.body.classList.add('no-clickzones');
 }
 
 /* ========================================================
