@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>填寫｜臺灣生命教育</title>
+<style>
+  :root {
+    --color-primary: #862633;
+    --color-primary-dark: #5C1A23;
+    --color-accent: #D4AF37;
+    --color-bg: #FAF7F2;
+    --color-card: #FFFFFF;
+    --color-text: #1A1A1A;
+    --color-muted: #6B6B6B;
+    --color-line: #E5DDD0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Microsoft JhengHei", "微軟正黑體", "PingFang TC", "Noto Sans TC", sans-serif;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.8em 1.2em 3em;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .brand { font-size: 0.85rem; color: var(--color-muted); letter-spacing: 0.1em; margin-bottom: 0.5em; }
+  h1 { color: var(--color-primary); font-size: 1.45rem; margin-bottom: 0.5em; line-height: 1.4; }
+  .lead { color: var(--color-muted); margin-bottom: 1.4em; line-height: 1.65; }
+  .lead strong { color: var(--color-primary); }
+  .input-group { margin: 1em 0; }
+  input[type="text"] {
+    width: 100%; padding: 0.9em 1em; font-size: 1.15rem;
+    border: 2px solid var(--color-line); border-radius: 12px;
+    font-family: inherit; box-sizing: border-box;
+    background: var(--color-card);
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--color-primary); }
+  .counter { font-size: 0.85rem; color: var(--color-muted); text-align: right; margin-top: 0.3em; }
+  button {
+    background: var(--color-primary); color: white; border: none;
+    padding: 1em 2em; font-size: 1.1rem; border-radius: 999px;
+    font-weight: 700; cursor: pointer; width: 100%;
+    font-family: inherit; letter-spacing: 0.05em;
+    box-shadow: 0 6px 18px rgba(134,38,51,0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  button:active { transform: translateY(1px); }
+  button:disabled { background: #C0C0C0; box-shadow: none; cursor: not-allowed; }
+
+  .status {
+    margin-top: 1em;
+    padding: 0.85em 1em;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    display: none;
+  }
+  .status.ok { background: rgba(45,122,85,0.12); color: #1F5A3D; }
+  .status.err { background: rgba(184,84,80,0.12); color: #8C2E2A; }
+
+  .history {
+    margin-top: 2em;
+    padding-top: 1.2em;
+    border-top: 1px solid var(--color-line);
+  }
+  .history h3 { font-size: 0.95rem; color: var(--color-muted); margin-bottom: 0.5em; font-weight: 600; letter-spacing: 0.05em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4em; }
+  .chip {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.3em 0.9em;
+    font-size: 0.92rem;
+    color: var(--color-primary);
+  }
+
+  .mode-banner {
+    margin-top: 1.5em;
+    padding: 0.8em 1em;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px dashed var(--color-accent);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: var(--color-muted);
+    line-height: 1.55;
+  }
+  .mode-banner strong { color: var(--color-primary); }
+</style>
+</head>
+<body>
+
+<div class="brand">臺灣生命教育｜暖身回應</div>
+<h1 id="question">⏳ 載入中⋯</h1>
+<p class="lead" id="instructions">請輸入您的關鍵字，每填一個就送出一次。</p>
+
+<form id="vote-form" style="display:none">
+  <div class="input-group">
+    <input type="text" id="answer" maxlength="30" autocomplete="off" required placeholder="輸入後按送出">
+    <div class="counter"><span id="char-count">0</span> / 30</div>
+  </div>
+  <button type="submit" id="submit-btn">送　出</button>
+</form>
+
+<div class="status ok" id="status-ok">✓ 已送出。可繼續填寫下一個關鍵字。</div>
+<div class="status err" id="status-err">⚠ 送出失敗，請稍後再試。</div>
+
+<div class="history" id="history" style="display:none">
+  <h3>您已送出</h3>
+  <div class="chips" id="chips"></div>
+</div>
+
+<!-- 預設為「示範模式」說明；啟用 Firebase 後可移除此區塊 -->
+<div class="mode-banner" id="mode-banner">
+  <strong>目前為示範模式</strong><br>
+  您的輸入會暫存在本機，並在簡報端按 <strong>D</strong> 鍵時以示範資料呈現。<br>
+  欲啟用真實多人即時互動，請依 README 設定 Firebase。
+</div>
+
+<script type="module">
+/* =========================================================
+   設定區
+========================================================= */
+const POLLS = {
+  'life':  { q: '你認為人生最重要的三件事是什麼？', tip: '請輸入<strong>關鍵字</strong>（不需完整句子），建議填 <strong>3 個</strong>，每個分開送出。' },
+};
+
+const USE_FIREBASE = false;  // ← 啟用真實後端時改為 true，並填入下方 firebaseConfig
+
+const firebaseConfig = {
+  // apiKey: "AIzaSy...",
+  // authDomain: "your-project.firebaseapp.com",
+  // databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+  // projectId: "your-project",
+  // appId: "1:1234567890:web:abc123"
+};
+
+/* =========================================================
+   題目初始化
+========================================================= */
+const pollId = new URLSearchParams(location.search).get('p') || 'life';
+const cfg = POLLS[pollId] || POLLS['life'];
+document.getElementById('question').textContent = cfg.q;
+document.getElementById('instructions').innerHTML = cfg.tip;
+
+const form = document.getElementById('vote-form');
+const ans  = document.getElementById('answer');
+const btn  = document.getElementById('submit-btn');
+const charCount = document.getElementById('char-count');
+const sOk = document.getElementById('status-ok');
+const sErr = document.getElementById('status-err');
+const historyBox = document.getElementById('history');
+const chipsBox = document.getElementById('chips');
+
+const submitted = [];
+
+function showStatus(el) {
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
+}
+function renderHistory() {
+  if (!submitted.length) { historyBox.style.display = 'none'; return; }
+  historyBox.style.display = 'block';
+  chipsBox.innerHTML = submitted.map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+ans.addEventListener('input', () => { charCount.textContent = ans.value.length; });
+
+/* =========================================================
+   兩種送出實作：示範模式 vs Firebase
+========================================================= */
+let submitFn = null;
+
+if (USE_FIREBASE) {
+  // 真實 Firebase 模式
+  Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js'),
+  ]).then(([appMod, authMod, dbMod]) => {
+    const app = appMod.initializeApp(firebaseConfig);
+    const auth = authMod.getAuth(app);
+    const db = dbMod.getDatabase(app);
+    return authMod.signInAnonymously(auth).then(() => ({ dbMod, db }));
+  }).then(({ dbMod, db }) => {
+    submitFn = async (text) => {
+      await dbMod.push(dbMod.ref(db, `polls/${pollId}/votes`), { text, ts: dbMod.serverTimestamp() });
+    };
+    form.style.display = 'block';
+    document.getElementById('mode-banner').style.display = 'none';
+  }).catch(err => {
+    document.getElementById('question').textContent = '⚠ 後端連線失敗';
+    document.getElementById('instructions').textContent = '請通知主辦方檢查 Firebase 設定，或改用紙本方式。';
+    console.error(err);
+  });
+} else {
+  // 示範模式（本機暫存）
+  submitFn = async (text) => {
+    // 寫入 sessionStorage（不跨裝置，僅供示範驗證流程）
+    const key = `demo-poll-${pollId}`;
+    const list = JSON.parse(sessionStorage.getItem(key) || '[]');
+    list.push({ text, ts: Date.now() });
+    sessionStorage.setItem(key, JSON.stringify(list));
+  };
+  form.style.display = 'block';
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = ans.value.trim();
+  if (!text || !submitFn) return;
+  btn.disabled = true;
+  btn.textContent = '送出中⋯';
+  try {
+    await submitFn(text);
+    submitted.unshift(text);
+    renderHistory();
+    ans.value = '';
+    charCount.textContent = '0';
+    showStatus(sOk);
+  } catch (err) {
+    showStatus(sErr);
+    console.error(err);
+  }
+  btn.disabled = false;
+  btn.textContent = '送　出';
+  ans.focus();
+});
+</script>
+
+</body>
+</html>
