@@ -782,6 +782,78 @@ table.competency td:first-child {
   border: 2px solid var(--color-accent);
 }
 
+/* ============= 水彩肖像框（參考 Canva〈人生三問〉的肖像與底色） ============= */
+.wc-frame {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(155deg, var(--wc1, #F3EFE6), var(--wc2, #E7DECB));
+  box-shadow: var(--shadow-strong);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+}
+.wc-frame img { display: block; width: 100%; height: auto; border-radius: 11px; }
+.wc-camus   { --wc1: #EEF0F5; --wc2: #D8DDEB; }  /* 冷調石板藍——存在主義的清峻 */
+.wc-tolstoy { --wc1: #EDF1E8; --wc2: #D9E4CE; }  /* 柔和橄欖綠——晚年的沉靜 */
+.wc-kant    { --wc1: #F6EFDD; --wc2: #EBDDBE; }  /* 暖調金羊皮——理性的秩序 */
+.wc-with-caption { display: flex; flex-direction: column; align-items: center; }
+.wc-with-caption .caption {
+  margin-top: 0.6em;
+  font-size: 0.98rem;
+  color: var(--color-muted);
+  font-family: var(--font-serif);
+  font-style: italic;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ============= 遺願清單（人生二問）版型 ============= */
+.bl-grid {
+  display: grid;
+  grid-template-columns: 6fr 5fr;
+  gap: 2.6vw;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  margin-top: 0.3em;
+}
+.bl-photo {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+  box-shadow: var(--shadow-strong);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.bl-photo-cap {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-top: 0.5em;
+  font-style: italic;
+}
+.bl-cards { display: flex; flex-direction: column; gap: 1em; }
+
+/* ============= 思想家：左肖像滿版 + 右內容（康德／托爾斯泰） ============= */
+.thinker-split {
+  display: grid;
+  grid-template-columns: clamp(230px, 25vw, 320px) 1fr;
+  gap: 2.4vw;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  margin-top: 0.2em;
+}
+.thinker-split > .thinker-content { min-width: 0; }
+.thinker-split .lead { margin-bottom: 0.55em; }
+.q-stack { display: flex; flex-direction: column; gap: 0.7em; }
+.q-stack .q-card { padding: 0.8em 1.3em; }
+.q-stack .q-card h3 { margin-top: 0.1em; }
+.q-stack .q-card .q-question { margin: 0.2em 0 0.35em; }
+.q-stack .q-card p:last-child { margin-bottom: 0; }
+@media (max-width: 900px) {
+  .thinker-split { grid-template-columns: 1fr; }
+  .bl-grid { grid-template-columns: 1fr; }
+}
+
 /* ============= 結語回首頁按鈕 ============= */
 .back-home-btn {
   position: relative;
@@ -1219,8 +1291,8 @@ table.competency td:first-child {
 <section class="slide" data-slide="14">
   <h2>卡繆的「人生一問」</h2>
   <div class="thinker-row">
-    <div class="portrait-with-caption">
-      <img src="images/camus.jpg" alt="Albert Camus" class="portrait portrait-md">
+    <div class="wc-with-caption" style="flex: none; width: clamp(260px, 28vw, 360px);">
+      <div class="wc-frame wc-camus"><img src="images/camus_wc.jpg" alt="Albert Camus 水彩肖像"></div>
       <div class="caption">Albert Camus<br>1913–1960</div>
     </div>
     <div class="thinker-text">
@@ -1242,96 +1314,101 @@ table.competency td:first-child {
 <section class="slide" data-slide="15">
   <h2>《遺願清單》的「人生二問」</h2>
   <p class="lead">電影《遺願清單》中，Carter 對 Edward 提出兩個進天堂的條件。</p>
-  <div class="two-col">
-    <div class="card">
-      <h3>一生是否都過得快樂？</h3>
-      <p>看似簡單，卻隱含值得思辨的課題：</p>
-      <ul class="plain">
-        <li>快樂有表面、感官、短暫的</li>
-        <li>也有深層、精神、長期的</li>
-        <li>快樂真的那麼重要嗎？</li>
-        <li>若過得快樂卻沒有意義呢？</li>
-      </ul>
+  <div class="bl-grid">
+    <div>
+      <img src="images/bucket_list.jpg" alt="電影《一路玩到掛 The Bucket List》劇照——Morgan Freeman 與 Jack Nicholson" class="bl-photo">
+      <div class="bl-photo-cap">《一路玩到掛 The Bucket List》（2007）</div>
     </div>
-    <div class="card">
-      <h3>一生是否都帶給旁邊的人快樂？</h3>
-      <p>同樣有需思辨的問題：</p>
-      <ul class="plain">
-        <li>要如何帶給別人快樂？</li>
-        <li>若不講究方法，會不會弄巧成拙？</li>
-        <li>反而帶給自己與他人痛苦？</li>
-      </ul>
+    <div class="bl-cards">
+      <div class="card">
+        <h3>一生是否都過得快樂？</h3>
+        <ul class="plain" style="margin-top:0.2em;">
+          <li>快樂有表面、感官、短暫的</li>
+          <li>也有深層、精神、長期的</li>
+          <li>快樂真的那麼重要嗎？</li>
+          <li>若過得快樂卻沒有意義呢？</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>一生是否都帶給旁邊的人快樂？</h3>
+        <ul class="plain" style="margin-top:0.2em;">
+          <li>要如何帶給別人快樂？</li>
+          <li>若不講究方法，會不會弄巧成拙？</li>
+          <li>反而帶給自己與他人痛苦？</li>
+        </ul>
+      </div>
     </div>
   </div>
-  <p style="margin-top: 1em; color: var(--color-muted); font-style: italic;">由此可見，「人生二問」似乎仍不能涵蓋人生所有最重要的課題。</p>
+  <p style="margin-top: 0.8em; color: var(--color-muted); font-style: italic;">由此可見，「人生二問」似乎仍不能涵蓋人生所有最重要的課題。</p>
 </section>
 
 <!-- ============== 16. 康德的人生三問 ============== -->
 <section class="slide" data-slide="16">
   <h2>康德的「人生三問」</h2>
-  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.5em;">
-    <div class="portrait-with-caption">
-      <img src="images/kant.jpg" alt="Immanuel Kant" class="portrait portrait-sm">
+  <div class="thinker-split">
+    <div class="wc-with-caption">
+      <div class="wc-frame wc-kant"><img src="images/kant_wc.jpg" alt="Immanuel Kant 水彩肖像"></div>
       <div class="caption">Immanuel Kant<br>1724–1804</div>
     </div>
-    <p class="lead" style="flex: 1; margin-top: 0.5em;">康德在《純粹理性批判》、《實踐理性批判》、《判斷力批判》三大批判的深奧論述背後，其核心問題可歸結為三：</p>
+    <div class="thinker-content">
+      <p class="lead">康德在《純粹理性批判》、《實踐理性批判》、《判斷力批判》三大批判的深奧論述背後，其核心問題可歸結為三：</p>
+      <div class="q-stack">
+        <div class="q-card">
+          <div class="q-num">1</div>
+          <h3>我能知道什麼？</h3>
+          <p class="q-question">What can I know?</p>
+          <p>探討人類認識能力的界限與可能性——哪些知識是客觀真實的，哪些只是主觀認知的產物。<strong>知識論的範疇。</strong></p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">2</div>
+          <h3>我應該做什麼？</h3>
+          <p class="q-question">What ought I to do?</p>
+          <p>探討人類行為的道德準則——康德強調「無上命令」，認為道德行為應出於對道德法則的純粹敬重。<strong>倫理學的核心課題。</strong></p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">3</div>
+          <h3>我可以期待什麼？</h3>
+          <p class="q-question">What may I hope?</p>
+          <p>觸及宗教與信仰的層面——盡了道德義務後，可否期待某種超越現世的回報？為道德實踐的圓滿，必須「預設」上帝與靈魂不朽。</p>
+        </div>
+      </div>
+      <blockquote style="margin-top: 0.7em;">
+        這三個問題最終都可以歸結到一個更根本的提問：<strong>「人是什麼？」（What is man?）</strong>——這顯示了「人學探索」在人生根本課題中的核心地位。
+      </blockquote>
+    </div>
   </div>
-  <div class="three-q-grid">
-    <div class="q-card">
-      <div class="q-num">1</div>
-      <h3>我能知道什麼？</h3>
-      <p class="q-question">What can I know?</p>
-      <p>探討人類認識能力的界限與可能性——哪些知識是客觀真實的，哪些只是主觀認知的產物。<strong>知識論的範疇。</strong></p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">2</div>
-      <h3>我應該做什麼？</h3>
-      <p class="q-question">What ought I to do?</p>
-      <p>探討人類行為的道德準則——康德強調「無上命令」，認為道德行為應出於對道德法則的純粹敬重。<strong>倫理學的核心課題。</strong></p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">3</div>
-      <h3>我可以期待什麼？</h3>
-      <p class="q-question">What may I hope?</p>
-      <p>觸及宗教與信仰的層面——盡了道德義務後，可否期待某種超越現世的回報？為道德實踐的圓滿，必須「預設」上帝與靈魂不朽。</p>
-    </div>
-  </div>
-  <blockquote style="margin-top: 0.8em;">
-    這三個問題最終都可以歸結到一個更根本的提問：<strong>「人是什麼？」（What is man?）</strong>——這顯示了「人學探索」在人生根本課題中的核心地位。
-  </blockquote>
 </section>
 
 <!-- ============== 17. 托爾斯泰的人生三問 ============== -->
 <section class="slide" data-slide="17">
   <h2>托爾斯泰的「人生三問」</h2>
-  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.5em;">
-    <div class="portrait-with-caption">
-      <img src="images/tolstoy.jpg" alt="Leo Tolstoy" class="portrait portrait-sm">
+  <div class="thinker-split">
+    <div class="wc-with-caption">
+      <div class="wc-frame wc-tolstoy"><img src="images/tolstoy_wc.jpg" alt="Leo Tolstoy 水彩肖像"></div>
       <div class="caption">Leo Tolstoy<br>1828–1910</div>
     </div>
-    <p class="lead" style="flex: 1; margin-top: 0.5em;">托爾斯泰晚年經歷深刻的精神危機。在短篇小說《三個問題》中，他透過一個國王尋找人生答案的故事，提出三個關乎實踐智慧的提問：</p>
+    <div class="thinker-content">
+      <p class="lead">托爾斯泰晚年經歷深刻的精神危機。在短篇小說《三個問題》中，他透過一個國王尋找人生答案的故事，提出三個關乎實踐智慧的提問：</p>
+      <div class="q-stack">
+        <div class="q-card">
+          <div class="q-num">1</div>
+          <h3>最重要的時間？</h3>
+          <p style="font-size: 1.05rem;">答案：<strong>「現在」</strong>。因為只有在現在，我們才對自己擁有掌控權。</p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">2</div>
+          <h3>最重要的人？</h3>
+          <p style="font-size: 1.05rem;">答案：<strong>「現在與你在一起的人」</strong>。誰是你最需要關注的對象？</p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">3</div>
+          <h3>最重要的事？</h3>
+          <p style="font-size: 1.05rem;">答案：<strong>「為現在與你在一起的人做好事」</strong>。因為這正是人來到世界上的唯一目的。</p>
+        </div>
+      </div>
+      <p style="margin-top: 0.7em; font-size: 0.95rem; color: var(--color-muted);">托爾斯泰的「人生三問」側重日常生活中的實踐與抉擇——提醒我們把握當下、珍惜身邊的人。但它忽略了康德的第二問（如何判斷善惡）與第三問（行善後可有的盼望）。</p>
+    </div>
   </div>
-  <div class="three-q-grid">
-    <div class="q-card">
-      <div class="q-num">1</div>
-      <h3>最重要的時間？</h3>
-      <p style="font-size: 1.05rem;">答案：<strong>「現在」</strong>。</p>
-      <p>因為只有在現在，我們才對自己擁有掌控權。</p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">2</div>
-      <h3>最重要的人？</h3>
-      <p style="font-size: 1.05rem;">答案：<strong>「現在與你在一起的人」</strong>。</p>
-      <p>誰是你最需要關注的對象？</p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">3</div>
-      <h3>最重要的事？</h3>
-      <p style="font-size: 1.05rem;">答案：<strong>「為現在與你在一起的人做好事」</strong>。</p>
-      <p>因為，這正是人來到這個世界上的唯一目的。</p>
-    </div>
-  </div>
-  <p style="margin-top: 0.8em; font-size: 0.95rem; color: var(--color-muted);">托爾斯泰的「人生三問」側重日常生活中的實踐與抉擇——提醒我們把握當下、珍惜身邊的人。但它忽略了康德的第二問（如何判斷善惡）與第三問（行善後可有的盼望）。</p>
 </section>
 
 <!-- ============== 18. 高更的人生三問 ============== -->
@@ -1344,7 +1421,7 @@ table.competency td:first-child {
     </div>
     <p class="lead" style="flex: 1; margin-top: 0.5em;">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
   </div>
-  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 28vh; object-fit: contain; background: #1a1a1a;">
+  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 24vh; object-fit: contain; background: #1a1a1a;">
   <div class="three-q-grid">
     <div class="q-card">
       <div class="q-num">1</div>
@@ -1365,7 +1442,7 @@ table.competency td:first-child {
       <p>畫作左側：形容枯槁的老婦人，象徵<strong>衰老與死亡的臨近</strong>。逼迫我們直面死亡的必然性。</p>
     </div>
   </div>
-  <p style="margin-top: 0.8em; font-size: 0.95rem; color: var(--color-muted);">高更追問的是<strong>神學人學</strong>角度的存在意義、本質與歸宿，而非生物學上的演化或宇宙起源。不足在於：缺乏實踐關懷，反映的更多是個人的絕望與困惑。</p>
+  <p style="margin-top: 0.8em; font-size: 0.95rem; color: var(--color-muted);">高更追問的是<strong>神學人學</strong>角度的存在意義、本質與歸宿。不足在於：缺乏實踐關懷，反映的更多是個人的絕望與困惑。</p>
 </section>
 
 <!-- ============== 19. 小結：殊途同歸 ============== -->
@@ -1439,7 +1516,7 @@ table.competency td:first-child {
 <section class="slide" data-slide="23">
   <h2>終極信念：生死關懷與宗教探索</h2>
   <div style="display: flex; gap: 1.2em; align-items: flex-start; margin-bottom: 0.3em;">
-    <img src="images/heidegger.jpg" alt="Martin Heidegger" class="portrait portrait-sm">
+    <img src="images/heidegger.jpg" alt="Martin Heidegger" class="portrait portrait-md">
     <div style="flex: 1;">
       <p style="margin: 0;"><strong>海德格（Martin Heidegger, 1889–1976）</strong>：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——</p>
     </div>
