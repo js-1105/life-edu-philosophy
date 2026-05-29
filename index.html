@@ -613,6 +613,38 @@ table.competency td:first-child {
   padding: 0.3em 0.6em;
 }
 
+/* 學生間流傳的「教戰守則」警示條（S5） */
+.rumor-strip {
+  margin: 0.55em 0;
+  padding: 0.7em 1.1em;
+  background: linear-gradient(90deg, #2A1418 0%, #3A1B22 100%);
+  color: #F4E8D9;
+  border-radius: 10px;
+  border-left: 4px solid #FFD700;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  box-shadow: var(--shadow-soft);
+}
+.rumor-tag {
+  font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+  color: #FFD700;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.rumor-text {
+  font-size: clamp(0.92rem, 1.2vw, 1.1rem);
+  line-height: 1.6;
+}
+.rumor-text strong { color: #FBF3C5; font-weight: 700; }
+.rumor-text .route { color: #FFD700; font-weight: 700; }
+.rumor-text .divider { color: #6B6B6B; margin: 0 0.4em; }
+.rumor-src {
+  font-size: clamp(0.72rem, 0.85vw, 0.82rem);
+  color: #B8A89A;
+  font-style: italic;
+}
+
 /* ============= 思想家肖像 ============= */
 .portrait {
   display: inline-block;
@@ -791,9 +823,15 @@ table.competency td:first-child {
       <p style="font-size: 0.92rem; color: var(--color-muted); margin-top: 0.5em;">臺北市 2024 學年度校事會議案件，<strong>八成最後未成案</strong>——但老師在等待結果的那段時間，已被貼上「問題老師」標籤。</p>
     </div>
   </div>
-  <blockquote style="margin-top: 0.6em; font-size: 1.05rem;">
-    教育最珍貴的地方，從來不是把乖孩子教得更乖；<br>
-    而是有人願意在一個孩子還不可愛、一身麻煩時，仍然<strong>相信他有可能變好</strong>。
+  <div class="rumor-strip">
+    <span class="rumor-tag">⚠　學生間流傳的「教戰守則」</span>
+    <span class="rumor-text">
+      想趕走<strong>男老師</strong>　→　走「<span class="route">性別平等</span>」<span class="divider">／</span>想趕走<strong>女老師</strong>　→　走「<span class="route">校事會議</span>」
+    </span>
+    <span class="rumor-src">全國教師會理事李雅文受訪指出：有人在網路社群討論「如何用性平案陷害老師」；Threads 上一名國中生公開詢問如何把班導「弄走」，竟有人留言建議誣告。（聯合新聞網 2025）</span>
+  </div>
+  <blockquote style="margin-top: 0.5em; font-size: 1rem;">
+    教育最珍貴的地方，從來不是把乖孩子教得更乖；而是有人願意在一個孩子還不可愛、一身麻煩時，仍然<strong>相信他有可能變好</strong>。
   </blockquote>
 </section>
 
