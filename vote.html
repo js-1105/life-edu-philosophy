@@ -112,12 +112,6 @@
   <div class="chips" id="chips"></div>
 </div>
 
-<!-- 預設為「示範模式」說明；啟用 Firebase 後可移除此區塊 -->
-<div class="mode-banner" id="mode-banner">
-  <strong>目前為示範模式</strong><br>
-  您的輸入會暫存在本機，並在簡報端按 <strong>D</strong> 鍵時以示範資料呈現。<br>
-  欲啟用真實多人即時互動，請依 README 設定 Firebase。
-</div>
 
 <script type="module">
 /* =========================================================
@@ -127,14 +121,16 @@ const POLLS = {
   'life':  { q: '你認為人生最重要的三件事是什麼？', tip: '請輸入<strong>關鍵字</strong>（不需完整句子），建議填 <strong>3 個</strong>，每個分開送出。' },
 };
 
-const USE_FIREBASE = false;  // ← 啟用真實後端時改為 true，並填入下方 firebaseConfig
+const USE_FIREBASE = true;  // 即時模式
 
 const firebaseConfig = {
-  // apiKey: "AIzaSy...",
-  // authDomain: "your-project.firebaseapp.com",
-  // databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
-  // projectId: "your-project",
-  // appId: "1:1234567890:web:abc123"
+  apiKey: "AIzaSyAp8vTBjliQTurxOt5hIlzzfg8NH_ElGtg",
+  authDomain: "afl-slide-interactivity.firebaseapp.com",
+  databaseURL: "https://afl-slide-interactivity-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "afl-slide-interactivity",
+  storageBucket: "afl-slide-interactivity.firebasestorage.app",
+  messagingSenderId: "910810132832",
+  appId: "1:910810132832:web:fd2f9777a7a3861d3cae05"
 };
 
 /* =========================================================

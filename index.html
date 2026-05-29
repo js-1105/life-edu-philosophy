@@ -907,8 +907,8 @@ table.competency td:first-child {
       <p style="font-weight: 600; color: var(--color-primary); margin: 0.2em 0 0.3em;">掃 QR 開始填寫</p>
       <p class="poll-url">js-1105.github.io/<br>life-edu-philosophy/vote</p>
       <p style="font-size: 0.8rem; color: var(--color-muted); margin-top: 0.8em; line-height: 1.5;">
-        無網路？按 <kbd style="background:#fff;padding:0.1em 0.4em;border-radius:4px;border:1px solid var(--color-line);font-family:inherit;">D</kbd> 載入示範資料<br>
-        清空畫面：按 <kbd style="background:#fff;padding:0.1em 0.4em;border-radius:4px;border:1px solid var(--color-line);font-family:inherit;">R</kbd>
+        手機輸入會即時同步至此<br>
+        如需清除課後留存：請至 Firebase Console
       </p>
     </div>
     <div class="cloud-pane">
@@ -1693,7 +1693,7 @@ function showToast(msg, ms=2500) {
      2) 將下方 USE_FIREBASE 設為 true，並填入 firebaseConfig
      3) 把 vote.html 中的 firebaseConfig 也填上同樣的設定
 ======================================================== */
-const USE_FIREBASE = false;  // ← 想啟用真實互動時，改為 true
+const USE_FIREBASE = true;  // 即時模式：手機輸入會即時同步到簡報文字雲
 
 // 詞頻 map
 let wordFreq = new Map();
@@ -1836,11 +1836,13 @@ fetch('qr_life.svg')
 ======================================================== */
 if (USE_FIREBASE) {
   const firebaseConfig = {
-    // apiKey: "AIzaSy...",
-    // authDomain: "your-project.firebaseapp.com",
-    // databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
-    // projectId: "your-project",
-    // appId: "1:1234567890:web:abc123"
+    apiKey: "AIzaSyAp8vTBjliQTurxOt5hIlzzfg8NH_ElGtg",
+    authDomain: "afl-slide-interactivity.firebaseapp.com",
+    databaseURL: "https://afl-slide-interactivity-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "afl-slide-interactivity",
+    storageBucket: "afl-slide-interactivity.firebasestorage.app",
+    messagingSenderId: "910810132832",
+    appId: "1:910810132832:web:fd2f9777a7a3861d3cae05"
   };
   // 動態載入 Firebase modules（避免示範模式時連線）
   Promise.all([
