@@ -361,9 +361,9 @@ ul.plain li::before {
   color: var(--color-primary);
 }
 .cloud-canvas-wrap {
-  flex: 1;
+  flex: 1 1 auto;
   position: relative;
-  min-height: 0;
+  min-height: 56vh;   /* 明確最小高度，避免 flex 量出 0 */
   border-radius: 10px;
   overflow: hidden;
   background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F2 100%);
@@ -1746,71 +1746,65 @@ function addWord(text) {
   wordFreq.set(w, (wordFreq.get(w) || 0) + 1);
 }
 
+let renderCloudPending = false;
 function renderCloud() {
+  // 防止短時間內重複觸發（多筆 Firebase 更新同時到達時）
+  if (renderCloudPending) return;
+  renderCloudPending = true;
+  requestAnimationFrame(() => { renderCloudPending = false; doRenderCloud(); });
+}
+
+function doRenderCloud() {
   const canvas = document.getElementById('wordcloud-canvas');
   const wrap = canvas?.parentElement;
   const empty = document.getElementById('cloud-empty');
-  if (!canvas || !wrap) {
-    console.warn('[Cloud] 找不到 canvas 或 wrap 元素');
-    return;
-  }
+  if (!canvas || !wrap) return;
 
   // 更新計數
   const total = Array.from(wordFreq.values()).reduce((a,b)=>a+b, 0);
   document.getElementById('vote-count').textContent = total;
   document.getElementById('unique-count').textContent = wordFreq.size;
 
-  console.log('[Cloud] 渲染中：wordFreq.size =', wordFreq.size,
-              ' wrap =', wrap.clientWidth, 'x', wrap.clientHeight,
-              ' WordCloud lib =', typeof WordCloud);
-
   if (wordFreq.size === 0) {
     if (empty) empty.style.display = 'flex';
-    const ctx = canvas.getContext('2d');
-    canvas.width = wrap.clientWidth; canvas.height = wrap.clientHeight;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
     return;
   }
   if (empty) empty.style.display = 'none';
-
-  // 若 wrap 尺寸為 0（slide 轉場中），稍候再試
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  if (w < 50 || h < 50) {
-    console.warn('[Cloud] wrap 尺寸太小，延遲 300ms 再渲染');
-    setTimeout(renderCloud, 300);
-    return;
-  }
 
   if (typeof WordCloud !== 'function') {
     console.error('[Cloud] ✗ WordCloud library 未載入！');
     return;
   }
 
+  // 取尺寸：優先 getBoundingClientRect（更可靠），不足則用視窗推估
+  const rect = wrap.getBoundingClientRect();
+  let w = Math.floor(rect.width);
+  let h = Math.floor(rect.height);
+  if (w < 100) w = Math.floor(window.innerWidth * 0.55);
+  if (h < 100) h = Math.floor(window.innerHeight * 0.55);
+
   // 配色：臺大椰林
   const palette = ['#862633', '#D4AF37', '#1A1A1A', '#5C1A23', '#6B6B6B', '#A8782E'];
 
-  // 直接用 CSS 像素設定 canvas（不做 DPR 縮放——wordcloud2 自己處理 retina）
   canvas.width = w;
   canvas.height = h;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
 
-  // 排序：詞頻高的先放
   const list = Array.from(wordFreq.entries())
     .sort((a,b) => b[1] - a[1])
-    .map(([w,n]) => [w, n]);
+    .map(([word,n]) => [word, n]);
 
   const maxFreq = list[0][1];
-  const minSize = Math.max(18, Math.min(w, h) * 0.05);
-  const maxSize = Math.min(w, h) * 0.22;
+  const minSize = Math.max(20, Math.min(w, h) * 0.06);
+  const maxSize = Math.min(w, h) * 0.25;
 
-  // 將詞頻映射為字級
   const wcList = list.map(([word, n]) => {
     const size = minSize + (n / maxFreq) * (maxSize - minSize);
     return [word, size];
   });
 
-  console.log('[Cloud] 呼叫 WordCloud()，詞表：', wcList);
+  console.log('[Cloud] 繪製 — canvas', w, 'x', h, '，詞', wcList.length, '個');
 
   WordCloud(canvas, {
     list: wcList,
@@ -1829,11 +1823,6 @@ function renderCloud() {
     shrinkToFit: true,
     minSize: 12,
   });
-
-  // wordcloud2 用事件回報繪製狀態
-  canvas.addEventListener('wordcloudstop', () => {
-    console.log('[Cloud] ✓ wordcloudstop 事件——文字雲已繪製完成');
-  }, { once: true });
 }
 
 // 視窗大小變化時重繪
