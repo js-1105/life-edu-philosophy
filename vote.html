@@ -171,26 +171,34 @@ ans.addEventListener('input', () => { charCount.textContent = ans.value.length; 
 let submitFn = null;
 
 if (USE_FIREBASE) {
-  // 真實 Firebase 模式
+  console.log('[vote] 載入 Firebase SDK 中...');
   Promise.all([
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js'),
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js'),
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js'),
   ]).then(([appMod, authMod, dbMod]) => {
+    console.log('[vote] ✓ SDK 載入成功');
     const app = appMod.initializeApp(firebaseConfig);
     const auth = authMod.getAuth(app);
     const db = dbMod.getDatabase(app);
-    return authMod.signInAnonymously(auth).then(() => ({ dbMod, db }));
+    console.log('[vote] 嘗試匿名登入...');
+    return authMod.signInAnonymously(auth).then(cred => {
+      console.log('[vote] ✓ 匿名登入成功，uid =', cred.user.uid);
+      return { dbMod, db };
+    });
   }).then(({ dbMod, db }) => {
     submitFn = async (text) => {
-      await dbMod.push(dbMod.ref(db, `polls/${pollId}/votes`), { text, ts: dbMod.serverTimestamp() });
+      console.log('[vote] → 送出：', text);
+      const ref = dbMod.push(dbMod.ref(db, `polls/${pollId}/votes`));
+      await dbMod.set(ref, { text, ts: dbMod.serverTimestamp() });
+      console.log('[vote] ✓ 寫入成功，key =', ref.key);
     };
     form.style.display = 'block';
-    document.getElementById('mode-banner').style.display = 'none';
+    console.log('[vote] 準備就緒');
   }).catch(err => {
     document.getElementById('question').textContent = '⚠ 後端連線失敗';
-    document.getElementById('instructions').textContent = '請通知主辦方檢查 Firebase 設定，或改用紙本方式。';
-    console.error(err);
+    document.getElementById('instructions').textContent = '請通知主辦方檢查 Firebase 設定。錯誤：' + (err.code || err.message);
+    console.error('[vote] ✗ 失敗：', err);
   });
 } else {
   // 示範模式（本機暫存）
