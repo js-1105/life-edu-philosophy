@@ -538,12 +538,142 @@ table.competency td:first-child {
 }
 .click-zones.disabled, body.no-clickzones .click-zones { display: none; }
 
-.help-hint {
-  position: fixed; top: 1em; right: 1em;
-  font-size: 0.72rem;
+/* ============= YouTube 影片嵌入（16:9） ============= */
+.video-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-strong);
+}
+.video-wrap iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+
+/* ============= 對比卡片（王金平 vs 跳樓老師） ============= */
+.contrast-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.2vw;
+  align-items: stretch;
+  margin-top: 0.6em;
+}
+.contrast-card {
+  padding: 1.1em 1.2em;
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+  display: flex; flex-direction: column;
+}
+.contrast-card h3 {
+  margin: 0.2em 0 0.5em;
+  font-size: clamp(1.05rem, 1.45vw, 1.3rem);
+  color: var(--color-primary);
+}
+.contrast-card p {
+  font-size: clamp(0.85rem, 1.05vw, 1rem);
+  margin-bottom: 0.5em;
+  line-height: 1.65;
+}
+.contrast-card .contrast-year {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  font-family: "Noto Serif TC", serif;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.1em;
+}
+.contrast-light {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF6E8 100%);
+  border-top: 5px solid var(--color-accent);
+}
+.contrast-light .contrast-year { color: var(--color-accent); }
+.contrast-dark {
+  background: linear-gradient(135deg, #2A1418 0%, #3A1B22 100%);
+  color: #F4E8D9;
+  border-top: 5px solid #6B6B6B;
+}
+.contrast-dark h3 { color: #E8C97A; }
+.contrast-dark p { color: #D8C8B8; }
+.contrast-dark blockquote, .contrast-dark .contrast-year { color: #E8C97A; }
+.contrast-dark p strong { color: #FBF3C5; }
+.contrast-vs {
+  align-self: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: "Noto Serif TC", serif;
+  letter-spacing: 0.05em;
+  padding: 0.3em 0.6em;
+}
+
+/* ============= 思想家肖像 ============= */
+.portrait {
+  display: inline-block;
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  border: 3px solid var(--color-accent);
+  background: white;
+  object-fit: cover;
+}
+.portrait-sm  { width: 110px; height: 140px; }
+.portrait-md  { width: 150px; height: 190px; }
+.portrait-lg  { width: 190px; height: 240px; }
+.portrait-with-caption {
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+.portrait-with-caption .caption {
+  margin-top: 0.5em;
+  font-size: 0.9rem;
   color: var(--color-muted);
-  opacity: 0.5;
-  z-index: 100;
+  line-height: 1.4;
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+}
+.thinker-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5em;
+  margin-top: 0.4em;
+}
+.thinker-row > .thinker-text { flex: 1; min-width: 0; }
+.painting {
+  display: block;
+  width: 100%;
+  max-width: 880px;
+  margin: 0.4em auto;
+  border-radius: 8px;
+  box-shadow: var(--shadow-strong);
+  border: 2px solid var(--color-accent);
+}
+
+/* ============= 結語回首頁按鈕 ============= */
+.back-home-btn {
+  position: relative;
+  z-index: 60;
+  margin-top: 2em;
+  background: transparent;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  padding: 0.7em 1.8em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.1em;
+  transition: all 0.2s;
+}
+.back-home-btn:hover {
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  transform: translateY(-2px);
 }
 
 .toast {
@@ -575,7 +705,7 @@ table.competency td:first-child {
   body { overflow: visible; }
   .deck { height: auto; }
   .slide { position: relative; opacity: 1; visibility: visible; transform: none; page-break-after: always; height: 100vh; }
-  .progress-bar, .nav-arrows, .page-indicator, .fs-toggle, .click-zones, .help-hint { display: none; }
+  .progress-bar, .nav-arrows, .page-indicator, .fs-toggle, .click-zones { display: none; }
 }
 </style>
 </head>
@@ -594,12 +724,12 @@ table.competency td:first-child {
 
 <!-- ============== 2. 章節地圖 ============== -->
 <section class="slide" data-slide="2">
-  <h2>本場簡報架構</h2>
+  <h2>本單元簡報架構</h2>
   <p class="lead">四個段落，回答一個問題：生命教育為何而立？立基何處？如何展開？</p>
-  <ol style="list-style: none; counter-reset: toc; max-width: 42em; margin-top: 0.8em;">
+  <ol style="list-style: none; counter-reset: toc; max-width: 44em; margin-top: 0.8em;">
     <li style="padding: 0.55em 0 0.55em 2.6em; position: relative; border-bottom: 1px dashed var(--color-line); font-size: clamp(1rem, 1.4vw, 1.2rem);">
       <span style="position:absolute; left:0; top:0.5em; width:2em; text-align:right; color:var(--color-accent); font-weight:700; font-family:'Noto Serif TC',serif;">壹</span>
-      臺灣生命教育的推動背景——教育本質的失落與重新召喚
+      從時代挑戰看生命課題——AI 時代、教育現場與「人的培育」
     </li>
     <li style="padding: 0.55em 0 0.55em 2.6em; position: relative; border-bottom: 1px dashed var(--color-line); font-size: clamp(1rem, 1.4vw, 1.2rem);">
       <span style="position:absolute; left:0; top:0.5em; width:2em; text-align:right; color:var(--color-accent); font-weight:700; font-family:'Noto Serif TC',serif;">貳</span>
@@ -614,10 +744,91 @@ table.competency td:first-child {
       臺灣生命教育的五大核心素養——體系的擴展與整合
     </li>
   </ol>
-  <p style="margin-top: 1.2em; font-size: 0.95rem; color: var(--color-muted);">在正式進入文本之前，先以兩個暖身活動切入：一組數據，一個你我都該回答的問題。</p>
+  <p style="margin-top: 1.2em; font-size: 0.95rem; color: var(--color-muted);">第一部分將從三組「時代脈動」切入——AI 浪潮、教育現場的反差，以及一篇商周專欄——再進入暖身互動與文本論述。</p>
 </section>
 
-<!-- ============== 3. 暖身① 數據 ============== -->
+<!-- ============== 3. 章節 壹：從時代挑戰看生命課題 ============== -->
+<section class="slide chapter" data-slide="3">
+  <div class="chapter-num">壹</div>
+  <h1>從時代挑戰看生命課題</h1>
+  <p class="lead">AI 來了、執行被取代、老師被霸凌跳樓、學生憂鬱率攀升——<br>當「生計教育」的承諾失靈，「人的培育」的呼喚才被聽見。</p>
+</section>
+
+<!-- ============== 4. 黃仁勳演講 ============== -->
+<section class="slide" data-slide="4">
+  <h2>時代脈動 ①　黃仁勳：AI 重新定義「能力」</h2>
+  <p class="lead">當執行成本趨近於零，<strong>定義問題、做出判斷、培養品味</strong>成為人最後的競爭力。</p>
+  <div class="video-wrap">
+    <iframe
+      src="https://www.youtube.com/embed/b50C4Avf_M0?rel=0&modestbranding=1"
+      title="黃仁勳演講"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+      allowfullscreen
+      loading="lazy"></iframe>
+  </div>
+  <p style="text-align: center; margin-top: 0.5em; font-size: 0.9rem; color: var(--color-muted);">
+    若影片無法在簡報內播放（YouTube 嵌入限制），請點 ▸ <a href="https://www.youtube.com/watch?v=b50C4Avf_M0" target="_blank" rel="noopener" style="color:var(--color-primary);">在 YouTube 直接觀看</a>
+  </p>
+</section>
+
+<!-- ============== 5. 王金平 vs 跳樓老師 對比 ============== -->
+<section class="slide" data-slide="5">
+  <h2>時代脈動 ②　誰敢當下一個尹衍樑的老師？</h2>
+  <p class="lead">兩則新聞，相隔一天——<strong>師生關係的兩個極端，照出我們失落了什麼。</strong></p>
+  <div class="contrast-grid">
+    <div class="contrast-card contrast-light">
+      <div class="contrast-year">1966</div>
+      <h3>王金平　×　尹衍樑</h3>
+      <p>感化院少年帶著刀傷走進老師宿舍。26 歲的王金平沒有通報、沒有切割，他拿出醫藥箱，包紮、清傷、然後說：</p>
+      <blockquote style="font-size: 1rem; margin: 0.5em 0;">「數學不會的，晚飯後來找我，我教你。<br>英文一天背三個單字，很快就補齊了。」</blockquote>
+      <p>那個少年後來成為擁有近 600 項國際專利的<strong>千億總裁尹衍樑</strong>。事業有成後，向當年的王金平老師<strong>三鞠躬</strong>。</p>
+    </div>
+    <div class="contrast-vs">VS</div>
+    <div class="contrast-card contrast-dark">
+      <div class="contrast-year">2026</div>
+      <h3>高雄某資深自然科老師</h3>
+      <p>教學認真、深受學生喜愛、長期指導科展，卻長期遭受極度不服管教學生<strong>言語霸凌、提告、家長申訴</strong>。</p>
+      <p>請了身心調適假回到學校後——<strong>從校舍高處墜落，送醫不治。</strong></p>
+      <p style="font-size: 0.92rem; color: var(--color-muted); margin-top: 0.5em;">臺北市 2024 學年度校事會議案件，<strong>八成最後未成案</strong>——但老師在等待結果的那段時間，已被貼上「問題老師」標籤。</p>
+    </div>
+  </div>
+  <blockquote style="margin-top: 0.6em; font-size: 1.05rem;">
+    教育最珍貴的地方，從來不是把乖孩子教得更乖；<br>
+    而是有人願意在一個孩子還不可愛、一身麻煩時，仍然<strong>相信他有可能變好</strong>。
+  </blockquote>
+</section>
+
+<!-- ============== 6. 商周文章啟發：理解不可外包 ============== -->
+<section class="slide" data-slide="6">
+  <h2>時代脈動 ③　可以外包思考，但不能外包「理解」</h2>
+  <p class="lead">侯智薰／商業周刊（2026.05.26）轉引 OpenAI 共同創辦人 Andrej Karpathy。對生命教育的啟發——</p>
+  <div class="two-col">
+    <div>
+      <blockquote style="font-size: 1.15rem; margin-bottom: 0.7em;">
+        「你可以外包你的<strong>思考</strong>，<br>但你不能外包你的<strong>理解</strong>。」
+        <span style="display:block; font-size:0.85rem; margin-top:0.4em; opacity:0.7;">—— Andrej Karpathy</span>
+      </blockquote>
+      <p>AI 時代的根本轉變：<strong>思考</strong>變成廉價商品（AI 執行更佳），但<strong>理解力</strong>的價值反而提升——因為人需要指揮更強大的工具。</p>
+      <p style="font-size: 0.95rem; color: var(--color-muted); margin-top: 0.5em;">「程式設計師不會被 AI 取代，但<strong>『只會寫程式』的人</strong>會。」</p>
+    </div>
+    <div>
+      <h3>AI 時代真正稀缺的三項資產</h3>
+      <ul class="feature-list" style="font-size: 1rem;">
+        <li><strong>理解力——</strong>把握本質：「<em>為什麼這樣做？</em>」</li>
+        <li><strong>品味——</strong>判斷好壞：「<em>哪一個版本更好？</em>」</li>
+        <li><strong>好奇心——</strong>持續探問：「<em>還有別的可能嗎？</em>」</li>
+      </ul>
+      <div class="practice-box" style="margin-top: 0.8em; padding: 0.9em 1.2em;">
+        <p style="margin: 0; font-size: 0.98rem;">
+          寫日記、深度閱讀、跨界交流——這些<strong>看似低效率</strong>的活動，恰是 AI 時代真正的複利。<br>
+          <span style="color: var(--color-primary); font-weight: 600;">這正是生命教育所關注的：「人之所以為人」的厚度。</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 7. 暖身① 數據 ============== -->
 <section class="slide" data-slide="3">
   <h2>為什麼需要生命教育？</h2>
   <p class="lead">三組數字，先讓我們看見當下青年世代正在面對的處境。</p>
@@ -690,14 +901,7 @@ table.competency td:first-child {
   </div>
 </section>
 
-<!-- ============== 6. 章節頁 壹 ============== -->
-<section class="slide chapter" data-slide="6">
-  <div class="chapter-num">壹</div>
-  <h1>臺灣生命教育的推動背景</h1>
-  <p class="lead">並非偶然的產物，而是在特定時代脈絡與社會變遷下，為了回應教育本質的失落與社會問題的浮現而應運而生。</p>
-</section>
-
-<!-- ============== 7. 教育本質的失落 ============== -->
+<!-- ============== 10. 教育本質的失落 ============== -->
 <section class="slide" data-slide="7">
   <h2>一、教育本質的失落</h2>
   <p class="lead">從「人的培育」傾斜到「人才教育」</p>
@@ -829,20 +1033,21 @@ table.competency td:first-child {
 <!-- ============== 14. 卡繆「人生一問」 ============== -->
 <section class="slide" data-slide="14">
   <h2>卡繆的「人生一問」</h2>
-  <div class="two-col-7-5">
-    <div>
+  <div class="thinker-row">
+    <div class="portrait-with-caption">
+      <img src="images/camus.jpg" alt="Albert Camus" class="portrait portrait-md">
+      <div class="caption">Albert Camus<br>1913–1960</div>
+    </div>
+    <div class="thinker-text">
       <blockquote style="font-size: 1.4rem; margin-bottom: 1em;">
         「人為什麼不自殺？」<br>
         <span style="font-size: 0.7em;">——這是唯一重要的哲學問題。</span>
       </blockquote>
-      <p>存在主義哲學家卡繆（Albert Camus）認為，如果人生本身是<strong>荒謬</strong>的、沒有意義的，那麼人為什麼還要繼續活下去？這個提問相當尖銳。</p>
-      <p>然而，這個問題預設了「人生荒謬」的哲學立場——而這個預設是否站得住腳，本身就是值得討論的議題。換言之，<strong>在他的「人生一問」背後，其實還可能有更重要的問題需要解決。</strong></p>
-    </div>
-    <div>
-      <div class="card" style="background: rgba(134, 38, 51, 0.04);">
-        <h3>卡繆的回應</h3>
-        <p>不選擇自殺，也不選擇逃避荒謬困境的宗教——<strong>即使荒謬也要勇敢地活下去</strong>，活出對抗荒謬而有尊嚴的人生。</p>
-        <p style="font-size: 0.9rem; color: var(--color-muted); margin-top: 0.5em;">沙特稱卡繆為「頑固的人本主義者」（stubborn humanist）。</p>
+      <p>存在主義哲學家卡繆認為，如果人生本身是<strong>荒謬</strong>的、沒有意義的，那麼人為什麼還要繼續活下去？這個提問相當尖銳。</p>
+      <p>然而，這個問題預設了「人生荒謬」的哲學立場——而這個預設是否站得住腳，本身就是值得討論的議題。<strong>在他的「人生一問」背後，其實還可能有更重要的問題需要解決。</strong></p>
+      <div class="card" style="background: rgba(134, 38, 51, 0.04); margin-top: 0.6em; padding: 0.9em 1.2em;">
+        <h3 style="margin: 0 0 0.3em; font-size: 1.05rem;">卡繆的回應</h3>
+        <p style="margin: 0; font-size: 0.98rem;">不選擇自殺，也不選擇逃避荒謬困境的宗教——<strong>即使荒謬也要勇敢地活下去</strong>。沙特稱他為「頑固的人本主義者」（stubborn humanist）。</p>
       </div>
     </div>
   </div>
@@ -879,7 +1084,13 @@ table.competency td:first-child {
 <!-- ============== 16. 康德的人生三問 ============== -->
 <section class="slide" data-slide="16">
   <h2>康德的「人生三問」</h2>
-  <p class="lead">Immanuel Kant（1724–1804）在《純粹理性批判》、《實踐理性批判》、《判斷力批判》三大批判的深奧論述背後，其核心問題可歸結為三：</p>
+  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.5em;">
+    <div class="portrait-with-caption">
+      <img src="images/kant.jpg" alt="Immanuel Kant" class="portrait portrait-sm">
+      <div class="caption">Immanuel Kant<br>1724–1804</div>
+    </div>
+    <p class="lead" style="flex: 1; margin-top: 0.5em;">康德在《純粹理性批判》、《實踐理性批判》、《判斷力批判》三大批判的深奧論述背後，其核心問題可歸結為三：</p>
+  </div>
   <div class="three-q-grid">
     <div class="q-card">
       <div class="q-num">1</div>
@@ -908,7 +1119,13 @@ table.competency td:first-child {
 <!-- ============== 17. 托爾斯泰的人生三問 ============== -->
 <section class="slide" data-slide="17">
   <h2>托爾斯泰的「人生三問」</h2>
-  <p class="lead">Leo Tolstoy（1828–1910）晚年經歷深刻的精神危機。在短篇小說《三個問題》中，他透過一個國王尋找人生答案的故事，提出三個關乎實踐智慧的提問：</p>
+  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.5em;">
+    <div class="portrait-with-caption">
+      <img src="images/tolstoy.jpg" alt="Leo Tolstoy" class="portrait portrait-sm">
+      <div class="caption">Leo Tolstoy<br>1828–1910</div>
+    </div>
+    <p class="lead" style="flex: 1; margin-top: 0.5em;">托爾斯泰晚年經歷深刻的精神危機。在短篇小說《三個問題》中，他透過一個國王尋找人生答案的故事，提出三個關乎實踐智慧的提問：</p>
+  </div>
   <div class="three-q-grid">
     <div class="q-card">
       <div class="q-num">1</div>
@@ -935,7 +1152,14 @@ table.competency td:first-child {
 <!-- ============== 18. 高更的人生三問 ============== -->
 <section class="slide" data-slide="18">
   <h2>高更的「人生三問」</h2>
-  <p class="lead">Paul Gauguin（1848–1903）於 1897 年在大溪地完成近四公尺巨幅油畫——《我們從何處來？我們是誰？我們向何處去？》</p>
+  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.4em;">
+    <div class="portrait-with-caption">
+      <img src="images/gauguin.jpg" alt="Paul Gauguin" class="portrait portrait-sm">
+      <div class="caption">Paul Gauguin<br>1848–1903</div>
+    </div>
+    <p class="lead" style="flex: 1; margin-top: 0.5em;">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
+  </div>
+  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 28vh; object-fit: contain; background: #1a1a1a;">
   <div class="three-q-grid">
     <div class="q-card">
       <div class="q-num">1</div>
@@ -1029,7 +1253,12 @@ table.competency td:first-child {
 <!-- ============== 23. 終極關懷：生死關懷 ============== -->
 <section class="slide" data-slide="23">
   <h2>終極信念：生死關懷與宗教探索</h2>
-  <p>海德格：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——</p>
+  <div style="display: flex; gap: 1.2em; align-items: flex-start; margin-bottom: 0.3em;">
+    <img src="images/heidegger.jpg" alt="Martin Heidegger" class="portrait portrait-sm">
+    <div style="flex: 1;">
+      <p style="margin: 0;"><strong>海德格（Martin Heidegger, 1889–1976）</strong>：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——</p>
+    </div>
+  </div>
   <div class="two-col">
     <div class="card" style="border-top-color: #6B6B6B;">
       <h3>死亡是一堵牆？</h3>
@@ -1269,6 +1498,7 @@ table.competency td:first-child {
     進入<strong>止於至善</strong>的正向循環。
   </blockquote>
   <p class="signature">——孫效智</p>
+  <button class="back-home-btn" onclick="goToSlide(1)">↑　回到首頁</button>
 </section>
 
 </div>
@@ -1285,7 +1515,6 @@ table.competency td:first-child {
   <button onclick="nextSlide()" aria-label="下一頁">›</button>
 </div>
 <button class="fs-toggle" onclick="toggleFullscreen()" aria-label="全螢幕" title="全螢幕（F）">⛶</button>
-<div class="help-hint">← → 切換　F 全螢幕　O 文件模式　D 示範資料　R 清空</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1310,8 +1539,8 @@ function showSlide(n) {
   document.getElementById('progress').style.width = (current / total * 100) + '%';
   history.replaceState(null, '', '#' + current);
 
-  // 進入文字雲頁時觸發重繪
-  if (n === 4) setTimeout(renderCloud, 250);
+  // 進入文字雲頁時觸發重繪（暖身② 文字雲現在位於第 8 張）
+  if (n === 8) setTimeout(renderCloud, 250);
 
   // 封面頁停用左右點擊區，避免攔截 CTA 按鈕的點擊
   document.body.classList.toggle('no-clickzones', n === 1);
@@ -1539,7 +1768,7 @@ function renderCloud() {
 
 // 視窗大小變化時重繪
 window.addEventListener('resize', () => {
-  if (current === 4) renderCloud();
+  if (current === 8) renderCloud();
 });
 
 /* ========================================================
@@ -1589,7 +1818,7 @@ if (USE_FIREBASE) {
       wordFreq.clear();
       const data = snap.val() || {};
       Object.values(data).forEach(v => addWord(v.text));
-      if (current === 4) renderCloud();
+      if (current === 8) renderCloud();
       else { // 在背景仍更新計數
         document.getElementById('vote-count').textContent = Array.from(wordFreq.values()).reduce((a,b)=>a+b,0);
         document.getElementById('unique-count').textContent = wordFreq.size;
