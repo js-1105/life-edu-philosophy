@@ -726,6 +726,62 @@ table.competency td:first-child {
 }
 .toast.show { opacity: 1; }
 
+/* 自訂確認對話框（不會像 confirm() 那樣讓 Chrome 退出全螢幕） */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.modal-backdrop.show { display: flex; }
+.modal-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.8em 2em 1.4em;
+  box-shadow: var(--shadow-strong);
+  max-width: 420px;
+  border-top: 4px solid var(--color-accent);
+}
+.modal-card h3 {
+  margin: 0 0 0.5em;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+.modal-card p {
+  margin: 0 0 1.2em;
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.modal-actions {
+  display: flex;
+  gap: 0.8em;
+  justify-content: flex-end;
+}
+.modal-actions button {
+  padding: 0.6em 1.4em;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modal-btn-cancel {
+  background: #E5DDD0;
+  color: var(--color-text);
+}
+.modal-btn-cancel:hover { background: #D6CBB5; }
+.modal-btn-confirm {
+  background: var(--color-primary);
+  color: white;
+}
+.modal-btn-confirm:hover { background: var(--color-primary-dark); }
+
 /* 響應式 */
 @media (max-width: 900px) {
   .two-col, .two-col-7-5, .three-col, .three-q-grid { grid-template-columns: 1fr; }
@@ -906,10 +962,6 @@ table.competency td:first-child {
       <div class="poll-qr-box" id="qr-host"><!-- QR 由 JS 載入 --></div>
       <p style="font-weight: 600; color: var(--color-primary); margin: 0.2em 0 0.3em;">掃 QR 開始填寫</p>
       <p class="poll-url">js-1105.github.io/<br>life-edu-philosophy/vote</p>
-      <p style="font-size: 0.8rem; color: var(--color-muted); margin-top: 0.8em; line-height: 1.5;">
-        手機輸入會即時同步至此<br>
-        如需清除課後留存：請至 Firebase Console
-      </p>
     </div>
     <div class="cloud-pane">
       <h3>即時結果（<span id="vote-count">0</span> 個關鍵字，<span id="unique-count">0</span> 種詞彙）</h3>
@@ -1554,6 +1606,18 @@ table.competency td:first-child {
 <button class="fs-toggle" onclick="toggleFullscreen()" aria-label="全螢幕" title="全螢幕（F）">⛶</button>
 <div class="toast" id="toast"></div>
 
+<!-- 自訂確認對話框（替代瀏覽器 confirm，避免 Chrome 退出全螢幕） -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-card">
+    <h3 id="modalTitle">確認</h3>
+    <p id="modalMessage">確定要執行此動作？</p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" id="modalCancel">取消</button>
+      <button class="modal-btn-confirm" id="modalConfirm">確定</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ========================================================
    1. 簡報導覽
@@ -1689,6 +1753,37 @@ function showToast(msg, ms=2500) {
   setTimeout(() => t.classList.remove('show'), ms);
 }
 
+// 自訂確認對話框（Promise-based，不會退出全螢幕）
+function showConfirm({ title = '確認', message = '', okText = '確定', cancelText = '取消' } = {}) {
+  return new Promise(resolve => {
+    const backdrop = document.getElementById('modalBackdrop');
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    const okBtn = document.getElementById('modalConfirm');
+    const cancelBtn = document.getElementById('modalCancel');
+    okBtn.textContent = okText;
+    cancelBtn.textContent = cancelText;
+    const cleanup = (val) => {
+      backdrop.classList.remove('show');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      document.removeEventListener('keydown', onKey);
+      resolve(val);
+    };
+    const onOk = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    const onKey = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); cleanup(false); }
+      if (e.key === 'Enter')  { e.preventDefault(); cleanup(true); }
+    };
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    document.addEventListener('keydown', onKey);
+    backdrop.classList.add('show');
+    okBtn.focus();
+  });
+}
+
 /* ========================================================
    3. 文字雲（wordcloud2.js + 示範模式）
    --------------------------------------------------------
@@ -1772,6 +1867,10 @@ function doRenderCloud() {
 
   if (wordFreq.size === 0) {
     if (empty) empty.style.display = 'flex';
+    // 顯式清空 canvas（避免上一輪繪製的字殘留）
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.width;   // 重設等同於清空
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     return;
   }
   if (empty) empty.style.display = 'none';
@@ -1873,7 +1972,13 @@ if (USE_FIREBASE) {
   let _dbMod = null, _db = null;
   window.__clearVotes = async function() {
     if (!_dbMod || !_db) { showToast('Firebase 尚未就緒'); return; }
-    if (!confirm('確定要清空所有文字雲資料？此動作無法復原。')) return;
+    const ok = await showConfirm({
+      title: '清空文字雲',
+      message: '確定要清空所有文字雲資料？此動作無法復原。',
+      okText: '清空',
+      cancelText: '取消'
+    });
+    if (!ok) return;
     try {
       await _dbMod.remove(_dbMod.ref(_db, 'polls/life/votes'));
       showToast('✓ 已清空所有資料', 2500);
