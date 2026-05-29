@@ -27,9 +27,59 @@
 | Space / PageDown | 下一頁 |
 | F | 全螢幕 |
 | O | 文件模式（垂直滾動） |
-| D | 暖身文字雲：載入示範資料 |
-| R | 暖身文字雲：清空 |
+| D | 暖身文字雲：載入示範資料（預演用） |
+| R | 暖身文字雲：清空**本地**顯示（不影響 Firebase） |
+| **Shift + C** | **清空 Firebase 上所有真實資料**（會跳確認對話框） |
 | Home / End | 第一頁／最後一頁 |
+
+## 文字雲資料管理
+
+### 課前準備：清空舊資料
+
+開課前若有上一場留下的舊資料，**兩個方法擇一**：
+
+#### 方法 A：簡報內按 Shift + C（推薦，需先更新 Firebase 規則一次，見下文）
+1. 切到 S8 文字雲頁
+2. 按 **Shift + C**
+3. 出現「確定要清空所有文字雲資料？」對話框，按「確定」
+4. 約 1 秒內，文字雲清空、計數歸零
+
+#### 方法 B：Firebase Console 手動刪除（即刻可用，無需設定）
+1. 開啟 <https://console.firebase.google.com/project/afl-slide-interactivity/database/afl-slide-interactivity-default-rtdb/data>
+2. 展開左側 `polls` → `life`
+3. **將滑鼠移到 `votes` 節點上**，右側會出現 ✕ 圖示
+4. 點 ✕ → 確認刪除
+5. 回到簡報硬重新整理，文字雲已清空
+
+### 啟用方法 A 必需的規則更新（5 秒）
+
+預設規則禁止 `.remove()`，需放寬一次：
+
+1. 開啟 <https://console.firebase.google.com/project/afl-slide-interactivity/database/afl-slide-interactivity-default-rtdb/rules>
+2. 把整段規則替換為下方：
+
+```json
+{
+  "rules": {
+    "polls": {
+      "$pollId": {
+        ".read": true,
+        ".write": "auth != null",
+        "votes": {
+          "$voteId": {
+            ".validate": "newData.hasChildren(['text','ts']) && newData.child('text').isString() && newData.child('text').val().length <= 30 && newData.child('text').val().length >= 1"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+3. 按右上「**發布**」
+4. 之後 Shift+C 即可一鍵清空
+
+> ⚠️ 此版規則允許任何匿名使用者刪除資料（不只新增）。風險低：學生不知道後台 URL，但理論上能寫程式刪除。若課程涉及敏感資料，建議用方法 B。
 
 封面有「進入全螢幕．開始演講」按鈕，演講時建議由此進入。
 

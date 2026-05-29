@@ -1600,6 +1600,11 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'o' || e.key === 'O') document.body.classList.toggle('doc-mode');
   if (e.key === 'd' || e.key === 'D') loadDemoWords();
   if (e.key === 'r' || e.key === 'R') resetWords();
+  // Shift+C：清空 Firebase 上所有文字雲資料（會跳出確認對話框）
+  if (e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+    e.preventDefault();
+    if (typeof window.__clearVotes === 'function') window.__clearVotes();
+  }
 });
 
 // 初始化：依 hash 跳頁，否則停留封面（並確保封面停用 click-zones）
@@ -1864,16 +1869,37 @@ if (USE_FIREBASE) {
     messagingSenderId: "910810132832",
     appId: "1:910810132832:web:fd2f9777a7a3861d3cae05"
   };
+  // 把 dbMod / db 暴露成模組級變數，供清空功能使用
+  let _dbMod = null, _db = null;
+  window.__clearVotes = async function() {
+    if (!_dbMod || !_db) { showToast('Firebase 尚未就緒'); return; }
+    if (!confirm('確定要清空所有文字雲資料？此動作無法復原。')) return;
+    try {
+      await _dbMod.remove(_dbMod.ref(_db, 'polls/life/votes'));
+      showToast('✓ 已清空所有資料', 2500);
+      console.log('[Firebase] ✓ 已清空 polls/life/votes');
+    } catch (err) {
+      console.error('[Firebase] ✗ 清空失敗：', err);
+      if (err.code === 'PERMISSION_DENIED') {
+        showToast('清空失敗：請先更新 Firebase 規則（見 README）', 5000);
+      } else {
+        showToast('清空失敗：' + (err.code || err.message), 4000);
+      }
+    }
+  };
+
   console.log('[Firebase] 載入 Firebase SDK 中...');
   Promise.all([
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js'),
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js'),
     import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js'),
   ]).then(([appMod, authMod, dbMod]) => {
+    _dbMod = dbMod;
     console.log('[Firebase] ✓ SDK 載入成功');
     const app = appMod.initializeApp(firebaseConfig);
     const auth = authMod.getAuth(app);
     const db = dbMod.getDatabase(app);
+    _db = db;
     console.log('[Firebase] 初始化完成，嘗試匿名登入...');
     authMod.signInAnonymously(auth)
       .then(cred => console.log('[Firebase] ✓ 匿名登入成功，uid =', cred.user.uid))
