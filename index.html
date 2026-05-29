@@ -1750,33 +1750,50 @@ function renderCloud() {
   const canvas = document.getElementById('wordcloud-canvas');
   const wrap = canvas?.parentElement;
   const empty = document.getElementById('cloud-empty');
-  if (!canvas || !wrap) return;
+  if (!canvas || !wrap) {
+    console.warn('[Cloud] 找不到 canvas 或 wrap 元素');
+    return;
+  }
 
   // 更新計數
   const total = Array.from(wordFreq.values()).reduce((a,b)=>a+b, 0);
   document.getElementById('vote-count').textContent = total;
   document.getElementById('unique-count').textContent = wordFreq.size;
 
+  console.log('[Cloud] 渲染中：wordFreq.size =', wordFreq.size,
+              ' wrap =', wrap.clientWidth, 'x', wrap.clientHeight,
+              ' WordCloud lib =', typeof WordCloud);
+
   if (wordFreq.size === 0) {
     if (empty) empty.style.display = 'flex';
     const ctx = canvas.getContext('2d');
-    canvas.width = wrap.clientWidth;
-    canvas.height = wrap.clientHeight;
+    canvas.width = wrap.clientWidth; canvas.height = wrap.clientHeight;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     return;
   }
   if (empty) empty.style.display = 'none';
 
-  // 配色：臺大椰林（酒紅、金、墨黑、深灰）
+  // 若 wrap 尺寸為 0（slide 轉場中），稍候再試
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  if (w < 50 || h < 50) {
+    console.warn('[Cloud] wrap 尺寸太小，延遲 300ms 再渲染');
+    setTimeout(renderCloud, 300);
+    return;
+  }
+
+  if (typeof WordCloud !== 'function') {
+    console.error('[Cloud] ✗ WordCloud library 未載入！');
+    return;
+  }
+
+  // 配色：臺大椰林
   const palette = ['#862633', '#D4AF37', '#1A1A1A', '#5C1A23', '#6B6B6B', '#A8782E'];
 
-  // 設定 canvas 解析度
-  const dpr = window.devicePixelRatio || 1;
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  canvas.width = w * dpr; canvas.height = h * dpr;
-  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
+  // 直接用 CSS 像素設定 canvas（不做 DPR 縮放——wordcloud2 自己處理 retina）
+  canvas.width = w;
+  canvas.height = h;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
 
   // 排序：詞頻高的先放
   const list = Array.from(wordFreq.entries())
@@ -1784,25 +1801,39 @@ function renderCloud() {
     .map(([w,n]) => [w, n]);
 
   const maxFreq = list[0][1];
-  // weight: 字級大小（px），高頻者更大
-  const minPx = Math.max(14, Math.min(w, h) * 0.035);
-  const maxPx = Math.min(w, h) * 0.18;
+  const minSize = Math.max(18, Math.min(w, h) * 0.05);
+  const maxSize = Math.min(w, h) * 0.22;
+
+  // 將詞頻映射為字級
+  const wcList = list.map(([word, n]) => {
+    const size = minSize + (n / maxFreq) * (maxSize - minSize);
+    return [word, size];
+  });
+
+  console.log('[Cloud] 呼叫 WordCloud()，詞表：', wcList);
 
   WordCloud(canvas, {
-    list: list.map(([word, n]) => [word, Math.max(minPx, minPx + (n/maxFreq) * (maxPx - minPx))]),
+    list: wcList,
     weightFactor: 1,
     fontFamily: '"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",sans-serif',
-    color: (word, weight) => palette[Math.floor(Math.random() * palette.length)],
+    fontWeight: '700',
+    color: () => palette[Math.floor(Math.random() * palette.length)],
     backgroundColor: 'transparent',
-    rotateRatio: 0.45,
+    rotateRatio: 0.35,
     rotationSteps: 2,
-    minRotation: -Math.PI / 2,
-    maxRotation: Math.PI / 2,
+    minRotation: -Math.PI / 6,
+    maxRotation: Math.PI / 6,
     shuffle: true,
-    gridSize: Math.round(8 * (w/1000)),
+    gridSize: 8,
     drawOutOfBound: false,
     shrinkToFit: true,
+    minSize: 12,
   });
+
+  // wordcloud2 用事件回報繪製狀態
+  canvas.addEventListener('wordcloudstop', () => {
+    console.log('[Cloud] ✓ wordcloudstop 事件——文字雲已繪製完成');
+  }, { once: true });
 }
 
 // 視窗大小變化時重繪
