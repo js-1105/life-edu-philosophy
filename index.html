@@ -541,6 +541,7 @@ table.competency td:first-child {
 /* ============= YouTube 影片嵌入（16:9） ============= */
 .video-wrap {
   position: relative;
+  z-index: 60;         /* 高於 .click-zones (z=50)，避免點擊被攔截 */
   width: 100%;
   max-width: 880px;
   margin: 0 auto;
@@ -1540,8 +1541,10 @@ function showSlide(n) {
   // 進入文字雲頁時觸發重繪（暖身② 文字雲現在位於第 8 張）
   if (n === 8) setTimeout(renderCloud, 250);
 
-  // 封面頁停用左右點擊區，避免攔截 CTA 按鈕的點擊
-  document.body.classList.toggle('no-clickzones', n === 1);
+  // 在含有互動元素的頁面停用左右點擊區，避免攔截 iframe / 按鈕點擊
+  // S1 封面 CTA、S4 YouTube 影片、S37 結語回首頁按鈕
+  const noClickZoneSlides = [1, 4, 37];
+  document.body.classList.toggle('no-clickzones', noClickZoneSlides.includes(n));
 }
 
 function nextSlide() { showSlide(current + 1); }
