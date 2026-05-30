@@ -1826,9 +1826,10 @@ document.getElementById('total').textContent = total;
   slides.forEach(s => {
     if (s.classList.contains('chapter')) { chap++; return; }
     if (s.classList.contains('cover') || s.classList.contains('closing')) return;
-    const sec = Math.min(chap === 0 ? 1 : chap, 4); // 第一張章節頁之前的內容頁歸入第 1 章
+    const sec = Math.min(chap === 0 ? 1 : chap, 4); // 第一張章節頁之前的內容頁歸入第 1 章色調
     s.classList.add('sec-tint', 'sec-' + sec);
-    s.dataset.chap = numerals[sec - 1]; // 供 ::after 角落浮水印顯示
+    // 只有真正進入章節（chap>=1）的內容頁才顯示數字浮水印；章節地圖等前置頁不標
+    if (chap >= 1) s.dataset.chap = numerals[sec - 1];
   });
 })();
 
