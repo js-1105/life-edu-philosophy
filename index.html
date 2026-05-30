@@ -820,10 +820,24 @@ table.competency td:first-child {
     linear-gradient(155deg, var(--sec-a, #FAF7F2) 0%, var(--sec-b, #EFE7D9) 118%);
   background-size: 24px 24px, 100% 100%, 100% 100%;
 }
-.slide.sec-1 { --sec-a: #FAEDE9; --sec-b: #E8C8C2; }  /* 壹　暖玫瑰——時代挑戰 */
-.slide.sec-2 { --sec-a: #FBF3DD; --sec-b: #ECD4A8; }  /* 貳　暖金——人生 X 問 */
-.slide.sec-3 { --sec-a: #E8F2EB; --sec-b: #C6DCCF; }  /* 參　沉靜綠——人生三問 */
-.slide.sec-4 { --sec-a: #F1E8F5; --sec-b: #D4C3E1; }  /* 肆　雅紫——五大素養 */
+.slide.sec-1 { --sec-a: #FCF5F3; --sec-b: #EFDCD9; }  /* 壹　暖玫瑰——時代挑戰 */
+.slide.sec-2 { --sec-a: #FCF7EA; --sec-b: #F0E2C5; }  /* 貳　暖金——人生 X 問 */
+.slide.sec-3 { --sec-a: #EFF6F1; --sec-b: #D6E6DC; }  /* 參　沉靜綠——人生三問 */
+.slide.sec-4 { --sec-a: #F6F1F8; --sec-b: #E2D6EA; }  /* 肆　雅紫——五大素養 */
+
+/* 裝飾：左緣金色書脊 ＋ 角落章節數字浮水印 */
+.slide.sec-tint > * { position: relative; z-index: 1; }   /* 內容置於裝飾之上 */
+.slide.sec-tint::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 5px; background: var(--grad-accent); opacity: 0.6; z-index: 0;
+}
+.slide.sec-tint::after {
+  content: attr(data-chap);
+  position: absolute; top: -0.16em; right: 0.05em;
+  font-family: var(--font-serif); font-weight: 900; line-height: 1;
+  font-size: 38vh; color: var(--color-primary);
+  opacity: 0.05; z-index: 0; pointer-events: none; user-select: none;
+}
 .wc-with-caption { display: flex; flex-direction: column; align-items: center; }
 .wc-with-caption .caption {
   margin-top: 0.6em;
@@ -1807,12 +1821,14 @@ document.getElementById('total').textContent = total;
 
 // 依章節（壹/貳/參/肆）為內容頁套用底色：每遇到一張章節分隔頁，後續內容頁即屬該章
 (function assignSectionTints() {
+  const numerals = ['壹', '貳', '參', '肆'];
   let chap = 0; // 已經過幾張章節分隔頁：壹→1、貳→2、參→3、肆→4
   slides.forEach(s => {
     if (s.classList.contains('chapter')) { chap++; return; }
     if (s.classList.contains('cover') || s.classList.contains('closing')) return;
-    const sec = chap === 0 ? 1 : chap; // 第一張章節頁之前的內容頁（章節地圖）歸入第 1 章色調
-    s.classList.add('sec-tint', 'sec-' + Math.min(sec, 4));
+    const sec = Math.min(chap === 0 ? 1 : chap, 4); // 第一張章節頁之前的內容頁歸入第 1 章
+    s.classList.add('sec-tint', 'sec-' + sec);
+    s.dataset.chap = numerals[sec - 1]; // 供 ::after 角落浮水印顯示
   });
 })();
 
