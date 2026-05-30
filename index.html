@@ -795,6 +795,18 @@ table.competency td:first-child {
 .wc-camus   { --wc1: #EEF0F5; --wc2: #D8DDEB; }  /* 冷調石板藍——存在主義的清峻 */
 .wc-tolstoy { --wc1: #EDF1E8; --wc2: #D9E4CE; }  /* 柔和橄欖綠——晚年的沉靜 */
 .wc-kant    { --wc1: #F6EFDD; --wc2: #EBDDBE; }  /* 暖調金羊皮——理性的秩序 */
+.wc-gauguin { --wc1: #F4ECDD; --wc2: #E6D4B8; }  /* 大溪地暖土——藝術的原初 */
+.wc-heidegger { --wc1: #ECEEF2; --wc2: #D7DCE4; } /* 霧灰藍——向死存有的沉鬱 */
+
+/* ============= 全頁細緻底紋（#5：增添層次，淡到不影響閱讀） ============= */
+.slide:not(.cover):not(.chapter):not(.closing) {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(134, 38, 51, 0.05) 1px, transparent 1.5px),
+    radial-gradient(960px 640px at 94% 2%, rgba(212, 175, 55, 0.07), transparent 60%),
+    radial-gradient(820px 560px at 2% 102%, rgba(134, 38, 51, 0.045), transparent 58%);
+  background-size: 24px 24px, 100% 100%, 100% 100%;
+}
 .wc-with-caption { display: flex; flex-direction: column; align-items: center; }
 .wc-with-caption .caption {
   margin-top: 0.6em;
@@ -1414,14 +1426,14 @@ table.competency td:first-child {
 <!-- ============== 18. 高更的人生三問 ============== -->
 <section class="slide" data-slide="18">
   <h2>高更的「人生三問」</h2>
-  <div style="display: flex; gap: 1.5em; align-items: flex-start; margin-bottom: 0.4em;">
-    <div class="portrait-with-caption">
-      <img src="images/gauguin.jpg" alt="Paul Gauguin" class="portrait portrait-sm">
+  <div style="display: flex; gap: 1.6em; align-items: center; margin-bottom: 0.4em;">
+    <div class="wc-with-caption" style="flex: none; width: clamp(128px, 12vw, 158px);">
+      <div class="wc-frame wc-gauguin"><img src="images/gauguin_wc.jpg" alt="Paul Gauguin 水彩肖像"></div>
       <div class="caption">Paul Gauguin<br>1848–1903</div>
     </div>
-    <p class="lead" style="flex: 1; margin-top: 0.5em;">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
+    <p class="lead" style="flex: 1; margin-top: 0;">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
   </div>
-  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 24vh; object-fit: contain; background: #1a1a1a;">
+  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 13vh; object-fit: contain; background: #1a1a1a;">
   <div class="three-q-grid">
     <div class="q-card">
       <div class="q-num">1</div>
@@ -1442,7 +1454,7 @@ table.competency td:first-child {
       <p>畫作左側：形容枯槁的老婦人，象徵<strong>衰老與死亡的臨近</strong>。逼迫我們直面死亡的必然性。</p>
     </div>
   </div>
-  <p style="margin-top: 0.8em; font-size: 0.95rem; color: var(--color-muted);">高更追問的是<strong>神學人學</strong>角度的存在意義、本質與歸宿。不足在於：缺乏實踐關懷，反映的更多是個人的絕望與困惑。</p>
+  <p style="margin-top: 0.6em; font-size: 0.95rem; color: var(--color-muted);">高更從<strong>神學人學</strong>追問存在的起源、本質與歸宿，但缺乏實踐關懷，更多反映個人的絕望與困惑。</p>
 </section>
 
 <!-- ============== 19. 小結：殊途同歸 ============== -->
@@ -1515,8 +1527,8 @@ table.competency td:first-child {
 <!-- ============== 23. 終極關懷：生死關懷 ============== -->
 <section class="slide" data-slide="23">
   <h2>終極信念：生死關懷與宗教探索</h2>
-  <div style="display: flex; gap: 1.2em; align-items: flex-start; margin-bottom: 0.3em;">
-    <img src="images/heidegger.jpg" alt="Martin Heidegger" class="portrait portrait-md">
+  <div style="display: flex; gap: 1.4em; align-items: center; margin-bottom: 0.3em;">
+    <div class="wc-frame wc-heidegger" style="flex: none; width: clamp(140px, 14vw, 172px);"><img src="images/heidegger_wc.jpg" alt="Martin Heidegger 水彩肖像"></div>
     <div style="flex: 1;">
       <p style="margin: 0;"><strong>海德格（Martin Heidegger, 1889–1976）</strong>：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——</p>
     </div>
