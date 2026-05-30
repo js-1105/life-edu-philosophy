@@ -781,6 +781,17 @@ table.competency td:first-child {
   box-shadow: var(--shadow-strong);
   border: 2px solid var(--color-accent);
 }
+/* 依原畫比例定高、不信箱化——消除左右黑邊 */
+.painting-clean {
+  display: block;
+  height: 20vh;
+  width: auto;
+  max-width: 100%;
+  margin: 0.5em auto;
+  border-radius: 8px;
+  box-shadow: var(--shadow-strong);
+  border: 2px solid var(--color-accent);
+}
 
 /* ============= 水彩肖像框（參考 Canva〈人生三問〉的肖像與底色） ============= */
 .wc-frame {
@@ -1426,35 +1437,37 @@ table.competency td:first-child {
 <!-- ============== 18. 高更的人生三問 ============== -->
 <section class="slide" data-slide="18">
   <h2>高更的「人生三問」</h2>
-  <div style="display: flex; gap: 1.6em; align-items: center; margin-bottom: 0.4em;">
-    <div class="wc-with-caption" style="flex: none; width: clamp(128px, 12vw, 158px);">
+  <div class="thinker-split">
+    <div class="wc-with-caption">
       <div class="wc-frame wc-gauguin"><img src="images/gauguin_wc.jpg" alt="Paul Gauguin 水彩肖像"></div>
       <div class="caption">Paul Gauguin<br>1848–1903</div>
     </div>
-    <p class="lead" style="flex: 1; margin-top: 0;">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
+    <div class="thinker-content">
+      <p class="lead">高更於 1897 年在大溪地完成近四公尺巨幅油畫——《<strong>我們從何處來？我們是誰？我們向何處去？</strong>》（D'où venons-nous? Que sommes-nous? Où allons-nous?）</p>
+      <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting-clean">
+      <div class="three-q-grid" style="margin-top: 0.6em;">
+        <div class="q-card">
+          <div class="q-num">1</div>
+          <h3>我們從何處來？</h3>
+          <p class="q-question">D'où venons-nous?</p>
+          <p>畫作右側：沉睡的嬰兒與年輕女性，象徵<strong>生命的誕生與純真</strong>，引導思考生命的起源。</p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">2</div>
+          <h3>我們是誰？</h3>
+          <p class="q-question">Que sommes-nous?</p>
+          <p>畫作中央：採摘果實的成年男子，象徵<strong>壯年的勞動、慾望與追求</strong>，促使我們反思自我。</p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">3</div>
+          <h3>我們向何處去？</h3>
+          <p class="q-question">Où allons-nous?</p>
+          <p>畫作左側：形容枯槁的老婦人，象徵<strong>衰老與死亡的臨近</strong>，逼迫我們直面死亡。</p>
+        </div>
+      </div>
+      <p style="margin-top: 0.5em; font-size: 0.92rem; color: var(--color-muted);">高更從<strong>神學人學</strong>追問存在的起源、本質與歸宿，但缺乏實踐關懷，更多反映個人的絕望與困惑。</p>
+    </div>
   </div>
-  <img src="images/gauguin_painting.jpg" alt="高更《我們從何處來？我們是誰？我們向何處去？》（1897）" class="painting" style="max-height: 13vh; object-fit: contain; background: #1a1a1a;">
-  <div class="three-q-grid">
-    <div class="q-card">
-      <div class="q-num">1</div>
-      <h3>我們從何處來？</h3>
-      <p class="q-question">D'où venons-nous?</p>
-      <p>畫作右側：沉睡的嬰兒與年輕女性，象徵<strong>生命的誕生與初期的純真</strong>。引導我們思考生命的起源。</p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">2</div>
-      <h3>我們是誰？</h3>
-      <p class="q-question">Que sommes-nous?</p>
-      <p>畫作中央：採摘果實的成年男子，象徵<strong>壯年時期的勞動、慾望與追求</strong>。促使我們反思真正的自我。</p>
-    </div>
-    <div class="q-card">
-      <div class="q-num">3</div>
-      <h3>我們向何處去？</h3>
-      <p class="q-question">Où allons-nous?</p>
-      <p>畫作左側：形容枯槁的老婦人，象徵<strong>衰老與死亡的臨近</strong>。逼迫我們直面死亡的必然性。</p>
-    </div>
-  </div>
-  <p style="margin-top: 0.6em; font-size: 0.95rem; color: var(--color-muted);">高更從<strong>神學人學</strong>追問存在的起源、本質與歸宿，但缺乏實踐關懷，更多反映個人的絕望與困惑。</p>
 </section>
 
 <!-- ============== 19. 小結：殊途同歸 ============== -->
@@ -1527,27 +1540,30 @@ table.competency td:first-child {
 <!-- ============== 23. 終極關懷：生死關懷 ============== -->
 <section class="slide" data-slide="23">
   <h2>終極信念：生死關懷與宗教探索</h2>
-  <div style="display: flex; gap: 1.4em; align-items: center; margin-bottom: 0.3em;">
-    <div class="wc-frame wc-heidegger" style="flex: none; width: clamp(140px, 14vw, 172px);"><img src="images/heidegger_wc.jpg" alt="Martin Heidegger 水彩肖像"></div>
-    <div style="flex: 1;">
-      <p style="margin: 0;"><strong>海德格（Martin Heidegger, 1889–1976）</strong>：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——</p>
+  <div class="thinker-split">
+    <div class="wc-with-caption">
+      <div class="wc-frame wc-heidegger"><img src="images/heidegger_wc.jpg" alt="Martin Heidegger 水彩肖像"></div>
+      <div class="caption">Martin Heidegger<br>1889–1976</div>
+    </div>
+    <div class="thinker-content">
+      <p class="lead"><strong>海德格</strong>：「人是<strong>向死存有</strong>」（being-towards-death），注定要走向死亡。問題是——死亡是一堵牆，還是一扇門？</p>
+      <div class="two-col" style="gap: 1.4em; flex: none;">
+        <div class="card" style="border-top-color: #6B6B6B;">
+          <h3>死亡是一堵牆？</h3>
+          <p>純粹唯物論的世界——死後是虛無與斷滅。物理主義者 Owen Flanagan 坦承：「在沒有死後存在的世界中，意義問題是非常棘手而難以解決的問題。」</p>
+          <p style="font-size: 0.95rem; margin-top: 0.5em;">卡繆的存在虛無主義即如此：人生荒謬，卻仍勇敢挺立反抗。</p>
+        </div>
+        <div class="card">
+          <h3>死亡是一扇門？</h3>
+          <p>齊克果選擇<strong>信仰的跳躍</strong>——死後還有另一個世界，人生本身能有超越虛無而延伸至永恆的意義。</p>
+          <p style="font-size: 0.95rem; margin-top: 0.5em;">佛教「涅槃」、基督宗教「天國」、儒家「天人合一」——都為人類指引超越有限、追求永恆的道路。</p>
+        </div>
+      </div>
+      <blockquote style="margin-top: 0.6em; font-size: 0.98rem;">
+        生命教育並不預設特定終極信念或宗教立場，但鼓勵學生保持開放的心胸，去認識不同立場各代表怎樣不同的人生意義。
+      </blockquote>
     </div>
   </div>
-  <div class="two-col">
-    <div class="card" style="border-top-color: #6B6B6B;">
-      <h3>死亡是一堵牆？</h3>
-      <p>純粹唯物論的世界——死後是虛無與斷滅。物理主義者 Owen Flanagan 坦承：「在沒有死後存在的世界中，意義問題是非常棘手而難以解決的問題。」</p>
-      <p style="font-size: 0.95rem; margin-top: 0.5em;">卡繆的存在虛無主義即如此：人生荒謬，卻仍勇敢挺立反抗。</p>
-    </div>
-    <div class="card">
-      <h3>死亡是一扇門？</h3>
-      <p>齊克果選擇<strong>信仰的跳躍</strong>——死後還有另一個世界，人生本身能有超越虛無而延伸至永恆的意義。</p>
-      <p style="font-size: 0.95rem; margin-top: 0.5em;">佛教「涅槃」、基督宗教「天國」、儒家「天人合一」——都為人類指引超越有限、追求永恆的道路。</p>
-    </div>
-  </div>
-  <blockquote style="margin-top: 0.6em; font-size: 1rem;">
-    生命教育並不預設特定終極信念或宗教立場，但鼓勵學生保持開放的心胸，去認識不同立場各代表怎樣不同的人生意義。
-  </blockquote>
 </section>
 
 <!-- ============== 24. 第二問：價值思辨 ============== -->
@@ -1800,8 +1816,8 @@ function showSlide(n) {
   if (n === 8) setTimeout(renderCloud, 250);
 
   // 在含有互動元素的頁面停用左右點擊區，避免攔截 iframe / 按鈕點擊
-  // S1 封面 CTA、S4 YouTube 影片、S37 結語回首頁按鈕
-  const noClickZoneSlides = [1, 4, 37];
+  // S1 封面 CTA、S4 YouTube 影片、S36 結語回首頁按鈕（刪除引用來源頁後結語為最後一頁）
+  const noClickZoneSlides = [1, 4, total];
   document.body.classList.toggle('no-clickzones', noClickZoneSlides.includes(n));
 }
 
