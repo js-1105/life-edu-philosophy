@@ -809,15 +809,21 @@ table.competency td:first-child {
 .wc-gauguin { --wc1: #F4ECDD; --wc2: #E6D4B8; }  /* 大溪地暖土——藝術的原初 */
 .wc-heidegger { --wc1: #ECEEF2; --wc2: #D7DCE4; } /* 霧灰藍——向死存有的沉鬱 */
 
-/* ============= 全頁細緻底紋（#5：增添層次，淡到不影響閱讀） ============= */
-.slide:not(.cover):not(.chapter):not(.closing) {
+/* ============= 分章節底色 + 細緻底紋（增添視覺層次，淡到不影響閱讀） =============
+   由 JS 依章節（壹/貳/參/肆）為內容頁加上 .sec-tint .sec-N；
+   章節分隔頁、封面、結語維持金紅漸層，不套用。 */
+.slide.sec-tint {
   background-color: var(--color-bg);
   background-image:
     radial-gradient(circle at 1px 1px, rgba(134, 38, 51, 0.05) 1px, transparent 1.5px),
-    radial-gradient(960px 640px at 94% 2%, rgba(212, 175, 55, 0.07), transparent 60%),
-    radial-gradient(820px 560px at 2% 102%, rgba(134, 38, 51, 0.045), transparent 58%);
+    radial-gradient(940px 620px at 95% 0%, rgba(212, 175, 55, 0.10), transparent 60%),
+    linear-gradient(155deg, var(--sec-a, #FAF7F2) 0%, var(--sec-b, #EFE7D9) 118%);
   background-size: 24px 24px, 100% 100%, 100% 100%;
 }
+.slide.sec-1 { --sec-a: #FCF5F3; --sec-b: #EFDCD9; }  /* 壹　暖玫瑰——時代挑戰 */
+.slide.sec-2 { --sec-a: #FCF7EA; --sec-b: #F0E2C5; }  /* 貳　暖金——人生 X 問 */
+.slide.sec-3 { --sec-a: #EFF6F1; --sec-b: #D6E6DC; }  /* 參　沉靜綠——人生三問 */
+.slide.sec-4 { --sec-a: #F6F1F8; --sec-b: #E2D6EA; }  /* 肆　雅紫——五大素養 */
 .wc-with-caption { display: flex; flex-direction: column; align-items: center; }
 .wc-with-caption .caption {
   margin-top: 0.6em;
@@ -1798,6 +1804,17 @@ const slides = document.querySelectorAll('.slide');
 let current = 1;
 const total = slides.length;
 document.getElementById('total').textContent = total;
+
+// 依章節（壹/貳/參/肆）為內容頁套用底色：每遇到一張章節分隔頁，後續內容頁即屬該章
+(function assignSectionTints() {
+  let chap = 0; // 已經過幾張章節分隔頁：壹→1、貳→2、參→3、肆→4
+  slides.forEach(s => {
+    if (s.classList.contains('chapter')) { chap++; return; }
+    if (s.classList.contains('cover') || s.classList.contains('closing')) return;
+    const sec = chap === 0 ? 1 : chap; // 第一張章節頁之前的內容頁（章節地圖）歸入第 1 章色調
+    s.classList.add('sec-tint', 'sec-' + Math.min(sec, 4));
+  });
+})();
 
 function showSlide(n) {
   if (n < 1) n = 1;
